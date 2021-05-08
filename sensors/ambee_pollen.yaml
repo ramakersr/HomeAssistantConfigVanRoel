@@ -104,7 +104,7 @@
         value_template: "{{ state_attr('sensor.pollen', 'Species').Tree.Oak }}"
 
       pollen_den_count:
-        icon_template: "mdi:tree-outline"
+        icon_template: "mdi:pine-tree"
         friendly_name: "Den"
         unit_of_measurement: " /m³"
         value_template: "{{ state_attr('sensor.pollen', 'Species').Tree.Pine }}"
