@@ -11,7 +11,7 @@
 # Bron : https://gist.github.com/michilehr/7ce7431f97e82523336a120b50d0ebe2
 
   - platform: rest
-    scan_interval: 7200
+    scan_interval: 3600
     resource: !secret ambee-pollen-resource
     name: "pollen"
     value_template: >
