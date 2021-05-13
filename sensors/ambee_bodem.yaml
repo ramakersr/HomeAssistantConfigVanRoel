@@ -1,0 +1,44 @@
+#sensor 
+#===============================================================
+# Ambee Weer door Roel R
+# versie 13-05-2021
+# https://api-dashboard.getambee.com/#/signup account aanmaken voor een 100 api calls per dag..
+# vervang LAT, LONG en API-KEY door uw waarden  XX.XXXXXXXX X.XXXXXX
+# in je Secrets.yaml de volgende regels plaatsen: 
+# (zonder hekje ervoor)     ambee-weather-resource: "https://api.ambeedata.com/weather/latest/by-lat-lng?lat=XX.XXXXXX&lng=X.XXXXXX
+# (zonder hekje ervoor)     ambee-api: XXXXXXXXX
+
+  - platform: rest
+    scan_interval: 43200 # 2 maal per dag update
+    resource: !secret ambee-weather-soil-resource
+    name: "soil"
+    value_template: >
+      {{ value_json.version}}
+    headers:
+      content-type: "application/json"
+      x-api-key: !secret ambee-api # tussen aanhalingstekens "xxxxxx"
+    json_attributes_path: "$.data[0]"
+    json_attributes:
+      - _id
+      - scantime
+      - soil_temperature
+      - soil_moisture
+
+  - platform: template
+    sensors:
+      soil_actual_time:
+        icon_template: "mdi:clock"
+        friendly_name: "Tijdstip"
+        value_template: "{{ as_timestamp(state_attr('sensor.soil', 'scantime')) | timestamp_custom(' %d/%m/%Y %H:%M:%S ' ) }}"
+        
+      soil_actual_temperature:
+        icon_template: "mdi:thermometer-chevron-down"
+        friendly_name: "Bodemtemperatuur"
+        unit_of_measurement: "°C"
+        value_template: "{{ (state_attr('sensor.soil', 'soil_temperature'))|round(1) }}"
+
+      soil_actual_humidity:
+        icon_template: "mdi:water-percent"
+        friendly_name: "Bodemvochtigheid"
+        unit_of_measurement: "%"
+        value_template: "{{ state_attr('sensor.soil', 'soil_moisture') }}"
